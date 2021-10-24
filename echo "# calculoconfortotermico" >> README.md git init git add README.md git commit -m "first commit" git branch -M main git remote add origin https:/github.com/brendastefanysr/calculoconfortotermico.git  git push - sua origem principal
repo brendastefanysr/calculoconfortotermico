@@ -1,0 +1,185 @@
+from math import exp, log
+import time
+print('Programa computacional para cálculo dos Índices de Conforto Térmico')
+
+print("Desenvolvido por BRENDA STÉFANY SANTOS RODRIGUES")
+print("Graduanda em Engenharia Agrícola e Ambiental - UFR")
+time.sleep(5)
+arq=open("dados.txt")
+linhas=arq.readlines()
+for linha in linhas:
+    print(linha)
+
+print("---------------------------------------------------------------------------------------------------------------------------------------------")
+print('Para cálculo dos Índices de Conforto Térmico entre com os valores encontrados, após clique na tecla Enter')
+# Não utiliza-se vírgulas para entrada de valores! Utilize ponto.
+TBS= float(input("Digite o valor de Temperatura de Bulbo Seco em °C: "))
+UR = float(input("Digite o valor da Umidade Relativa em %: "))
+TGN= float(input("Digite o valor de Temperatura de Globo Negro (°C): "))
+VVkm=float(input("Digite o valor de Velocidade do vento em km/h: "))
+print("---------------------------------------------------------------------------------------------------------------------------------------------")
+
+TBS_k = ((TBS + 273.15))
+c1= -5800.2206  #Variáveis para Cálculo de Pressão de Vapor Saturado - PVS
+c2= 1.3914993
+c3= -0.048640239
+c4=0.000041764768
+c5= -1.4452093e-8
+c6=0.0
+c7=6.5459673
+c1_a= c1/TBS_k
+c3_a= c3*TBS_k
+c4_a= c4*(TBS_k**2)
+c5_a= c5*(TBS_k**3)
+c6_a= c6*(TBS_k**4)
+c7_a= c7*(log(TBS_k))
+PVS = exp(c1_a + c2 + c3_a + c4_a + c5_a + c6_a + c7_a) #equação PVS
+PPV = PVS * (UR/100) #Cálculo de Pressão de Vapor Parcial #Variáveis para Cálculo de Temperatura de Ponto de Orvalho
+ca= -35.957
+cb= 1.87266*(log(PPV))
+cc= 1.1689*(log(PPV))**2
+TPO= ca-cb+cc
+time.sleep(2)
+ITU= TBS+(0.36*TPO)+41.5
+print("         Índice de Temperatura e Umidade - ITU(THOM, 1959)      ")
+print("")
+print("         ITU =", ITU)
+print("")
+time.sleep(2)
+print("A Condição de conforto térmico para frango de corte de acordo com ITU é: ")
+if ITU <= 74:
+    print("                  Situação de ambiente com Conforto térmico      ")
+else:
+    if ITU <= 78:
+        print("                Situação de cuidado, alerta       ")
+    else:
+        if ITU <= 84:
+            print("             Situação de perigo      ")
+        else:
+            print("              Situação de emergência    ")
+print("")
+print("Faixa ideal de ITU de acordo com a idade em semanas (ABREU; ABREU, 2001)")
+print("SEMANAS |    ITU IDEAL    ")
+print("   1    |    72,4 - 80    ")
+print("   2    |    68,4 - 76    ")
+print("   3    |    64,5 - 72    ")
+print("   4    |    60,5 - 68    ")
+print("   5    |    56,6 - 64    ")
+print("   6    |    56,6 - 60    ")
+print("   7    |    56,6 - 60    ")
+    
+print("------------------------------------------------------------------------------------------------------------------")
+time.sleep(3)
+print("Índice de Temperatura do Globo Negro e Umidade - ITGU (BUFFINGTON et al., 1981)")
+time.sleep(3) #Aguardar
+TGN_k = ((TGN + 273.15))
+ITGU= TGN + (0.36*TPO)+41.5
+print("")
+print("            ITGU: ", ITGU)
+print("")
+print("A Condição de conforto térmico de acordo com o valor de ITGU para frango de corte")
+if ITGU <=65:
+    print("                        Situação de Conforto térmico                 ")
+else:
+    if ITGU <= 77:
+        print("                      Situação de Conforto térmico                   ")
+    else:
+        print("                        Desconforto térmico                          ")
+
+print("-----------------------------------------------------------------------------------------------------------------------------------")
+
+time.sleep(3)
+print("Índice de Carga Térmica Radiante - CTR [W/m^2](ESMAY,1979)")
+print("")
+time.sleep(2)
+#print("Primeiramente deve-se calcúlar a Temperatura Média Radiante (TMR)")
+VV = VVkm/3.6
+TMR= 100*(2.51*(VV**0.5)*(TGN_k - TBS_k)+((TGN_k/100)**4))**0.25
+#print("TMR [K] : ",TMR)
+cSB=5.67e-8 #Constante de Stefan-Boltzmann
+CTR= cSB*(TMR**4)
+print("                        CTR = ", CTR, "W/m^2                 ")
+print("")
+print("       Indique a seguir o tipo de telha do seu aviário"
+      "")
+print("Se for telha de BARRO digite 1")
+print("se telha de CIMENTO AMIANTO digite 2")
+print("se telha de FIBROCIMENTO digite 3")
+telha = int(input("Digite o número correspondente ao tipo de telha:"))
+print("")
+print("Utilizando como referência os valores de CTR indicados por Rosa (1984) de acordo com o sistema de telha tem-se:")
+telha_ = float(telha)
+while telha_ == 1:
+    print("CTR de referência é 498.3 W/m^2")
+    if CTR <= 498.3:
+        print("Valor de CTR abaixo do valor de referência")
+        CTR = CTR + 1
+        break
+    if CTR > 498.3:
+        print("Valor de CTR acima do valor de referência")
+        CTR = CTR + 1
+        break
+else:
+    print("")
+while telha_ == 2:
+    print("CTR de referência é 515.4 W/m^2")
+    if CTR <= 515.4:
+        print("Valor de CTR abaixo do valor de referência")
+        CTR = CTR + 1
+        break
+    if CTR > 515.4:
+        print("Valor de CTR acima do valor de referência")
+        CTR = CTR + 1
+        break
+else:
+    print("")
+while telha_ == 3:
+    print("CTR de referência é 515.0 W/m^2")
+    if CTR <= 515.0:
+        print("Valor de CTR abaixo do valor de referência")
+        CTR = CTR + 1
+        break
+    if CTR > 515.0:
+        print("Valor de CTR acima do valor de referência")
+        CTR = CTR + 1
+        break
+else:
+    print("")
+
+    
+print("---------------------------------------------------------------------------------------------------------------------")
+h= 6.7+ 0.243 * TBS + ((UR/100)*10**((7.5*TBS)/(237.3+TBS)))
+hkjoule= h*4.184
+print("Entalpia")
+print("")
+print("h =", h, "kcal/kg de ar seco ou", hkjoule, "kJ/kg de ar seco")
+print("")
+if hkjoule < 64:
+    print('valor de entalpia abaixo do limite inferior ideal para aves')
+else:
+    if hkjoule == 64:
+        print('Valor de entalpia dentro do limite ideal para aves')
+    else:
+        if hkjoule <= 70:
+            print('Valor de entalpia dentro do limite ideal para aves')
+        else:
+            print('valor de entalpia acima do limite superior ideal para aves')
+print("------------------------------------------------------------------------------------------------------------------------")
+print("Faixa de conforto térmico (ºC) de acordo com a idade dos frangos")
+print("SEMANAS | TEMPERATURA (°C)")
+print("   1    |      32 a 35    ")
+print("   2    |      29 a 32    ")
+print("   3    |      26 a 29    ")
+print("   4    |      23 a 26    ")
+print("   5    |      20 a 23    ")  
+print("   6    |         20      ")
+      
+
+
+
+
+
+
+
+
+
